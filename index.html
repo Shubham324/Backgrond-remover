@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BG Remover & Compressor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Background Remover & Image Compressor</h1>
+    <div class="upload-box">
+      <input type="file" id="imageInput" accept="image/*"/>
+      <button id="removeBtn">Remove Background</button>
+    </div>
+    <div id="previewContainer" class="preview-container">
+      <img id="preview" src="" alt="Preview" style="display:none;" />
+    </div>
+    <div class="compress-box" style="display:none;">
+      <label for="qualityRange">Compression Quality: <span id="qualityValue">80</span>%</label>
+      <input type="range" id="qualityRange" min="10" max="100" value="80"/>
+      <button id="compressBtn">Compress Image</button>
+    </div>
+    <div class="download-box" style="display:none;">
+      <a id="downloadLink" download="compressed.png">Download Image</a>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
