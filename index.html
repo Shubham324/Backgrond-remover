@@ -1,30 +1,409 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BG Remover & Compressor</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magic BG Remover</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .main-header {
+            background: rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .upload-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .upload-btn {
+            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .upload-btn input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .preview-image {
+            border-radius: 15px;
+            max-width: 100%;
+            height: auto;
+            display: none;
+        }
+        
+        .result-container {
+            margin-top: 2rem;
+        }
+        
+        .download-btn {
+            background: linear-gradient(45deg, #00cdac 0%, #02aab0 100%);
+            border: none;
+            margin-top: 1rem;
+        }
+        
+        .loader {
+            display: none;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+        
+        .main-footer {
+            background: rgba(0, 0, 0, 0.2);
+            margin-top: 4rem;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .ad-placeholder {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            margin: 1rem 0;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Comparison Section Styles */
+        .comparison-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin: 3rem 0;
+        }
+
+        .image-card {
+            flex: 1;
+            min-width: 300px;
+            max-width: 45%;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .image-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .conversion-arrow {
+            width: 60px;
+            background: linear-gradient(45deg, #4facfe 0%, #00cdac 100%);
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8.122 24l-4.122-4 8-8-8-8 4.122-4 11.878 12z'/%3E%3C/svg%3E") center/contain no-repeat;
+            opacity: 0.8;
+            align-self: center;
+        }
+
+        .image-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-container {
+                flex-direction: column;
+            }
+            .image-card {
+                max-width: 100%;
+            }
+            .conversion-arrow {
+                transform: rotate(90deg);
+                height: 60px;
+                width: 40px;
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+  <script type='text/javascript' src='//pl26392483.profitableratecpm.com/84/1f/9c/841f9c97c516cc49c118e62012d712fc.js'></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Background Remover & Image Compressor</h1>
-    <div class="upload-box">
-      <input type="file" id="imageInput" accept="image/*"/>
-      <button id="removeBtn">Remove Background</button>
+    <header class="main-header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#"><i class="fas fa-magic"></i> Magic BG Remover</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i class="fas fa-info-circle"></i> About</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i class="fas fa-envelope"></i> Contact</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!--<div class="container">
+        <div class="ad-placeholder">
+            Advertisement Banner (728x90)
+          	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3292605677131469"
+     crossorigin="anonymous"></script> -->
+<!-- top 
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3292605677131469"
+     data-ad-slot="4785382227"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+        </div>
+    </div> -->
+
+    <div class="container text-center py-5">
+        <h1 class="mb-4"><i class="fas fa-magic"></i> Magic Background Remover</h1>
+        <p class="lead mb-4">Upload your image and watch the background disappear!</p>
+        
+        <div class="upload-container">
+            <div class="mb-3">
+                <button class="upload-btn">
+                    Choose Image
+                    <input type="file" id="imageInput" accept="image/*">
+                </button>
+                <p class="mt-2 mb-0">or drag and drop your image here</p>
+            </div>
+            
+            <div class="loader"></div>
+            
+            <div class="comparison-container">
+                <div class="image-card">
+                    <img id="preview" class="preview-image" alt="Original Preview">
+                    <span class="image-label">Original Image</span>
+                </div>
+                
+                <div class="conversion-arrow"></div>
+                
+                <div class="image-card">
+                    <img id="resultImage" class="preview-image" alt="Result Preview" style="display: none;">
+                    <span class="image-label">Background Removed</span>
+                </div>
+            </div>
+
+            <div class="result-container" id="resultContainer">
+                <button class="btn download-btn" id="downloadBtn">
+                    <i class="fas fa-download"></i> Download Image
+                </button>
+            </div>
+        </div>
     </div>
-    <div id="previewContainer" class="preview-container">
-      <img id="preview" src="" alt="Preview" style="display:none;" />
-    </div>
-    <div class="compress-box" style="display:none;">
-      <label for="qualityRange">Compression Quality: <span id="qualityValue">80</span>%</label>
-      <input type="range" id="qualityRange" min="10" max="100" value="80"/>
-      <button id="compressBtn">Compress Image</button>
-    </div>
-    <div class="download-box" style="display:none;">
-      <a id="downloadLink" download="compressed.png">Download Image</a>
-    </div>
-  </div>
-  <script src="script.js"></script>
+
+    <!--<div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="ad-placeholder" style="min-height: 300px;">
+                    Sidebar Ad (300x250)
+                </div>
+            </div>
+            <div class="col-md-8">
+                <!-- Content can go here -->
+            <!--</div>
+        </div>
+    </div> -->
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>About Us</h5>
+                    <p>Professional background removal service using AI technology. Fast, free, and easy to use!</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-white">Terms of Service</a></li>
+                        <li><a href="#" class="text-white">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Contact</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-envelope"></i> support@magicbg.com</li>
+                        <li><i class="fas fa-phone"></i> +1 (800) 123-4567</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4">
+                <p>&copy; 2023 Magic BG Remover. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const API_ENDPOINT = "https://api.remove.bg/v1.0/removebg";
+        const API_KEY = "V1kjtj71382L9XudHTV1dEuV";
+        
+        const imageInput = document.getElementById('imageInput');
+        const preview = document.getElementById('preview');
+        const resultImage = document.getElementById('resultImage');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const loader = document.querySelector('.loader');
+        const errorAlert = document.createElement('div');
+        errorAlert.className = 'error-alert';
+        document.querySelector('.upload-container').appendChild(errorAlert);
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.style.display = 'block';
+                    preview.src = e.target.result;
+                    processImage(file);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        async function processImage(file) {
+            loader.style.display = 'block';
+            errorAlert.style.display = 'none';
+            resultImage.style.display = 'none';
+
+            try {
+                const formData = new FormData();
+                formData.append('image_file', file);
+                formData.append('size', 'auto');
+                formData.append('format', 'png');
+
+                const headers = new Headers();
+                headers.append('X-Api-Key', API_KEY);
+
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    body: formData,
+                    headers: headers
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.errors[0].title);
+                }
+
+                const processedBlob = await response.blob();
+                const resultUrl = URL.createObjectURL(processedBlob);
+                
+                resultImage.src = resultUrl;
+                resultImage.style.display = 'block';
+                resultImage.style.animation = 'fadeIn 0.5s ease';
+                
+            } catch (error) {
+                errorAlert.textContent = `Error: ${error.message}`;
+                errorAlert.style.display = 'block';
+            } finally {
+                loader.style.display = 'none';
+            }
+        }
+
+        downloadBtn.addEventListener('click', function() {
+            const link = document.createElement('a');
+            link.download = 'background-removed.png';
+            link.href = resultImage.src;
+            link.click();
+        });
+
+        document.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        document.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                imageInput.files = e.dataTransfer.files;
+                const event = new Event('change');
+                imageInput.dispatchEvent(event);
+            }
+        });
+    </script>
+  <script type="text/javascript">
+	atOptions = {
+		'key' : '0676987beaa813068c0d621478929f84',
+		'format' : 'iframe',
+		'height' : 90,
+		'width' : 728,
+		'params' : {}
+	};
+</script>
 </body>
 </html>
